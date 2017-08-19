@@ -8,6 +8,7 @@ module Repl
 import           Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.IO as Text
+import           System.IO
 
 -- | Representation of a REPL.
 data Repl = Repl
@@ -35,6 +36,8 @@ isQuitCommand (Repl _ _ _ xs) ys = normalize xs == normalize ys
 -- | Starts the REPL.
 runRepl :: Repl -> IO ()
 runRepl repl = do    
+    hSetBuffering stdin NoBuffering
+    hSetBuffering stdout NoBuffering    
     line <- replRead repl
     let result = replEval repl line
     if isQuitCommand repl line 
