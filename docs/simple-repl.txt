@@ -29,5 +29,12 @@ Repl :: IO Text -> (Text -> Text) -> (Text -> IO ()) -> Text -> Repl
 --   break the loop.
 defaultRepl :: Repl
 
--- | Starts the REPL.
+-- | Starts the REPL
+--   
+--   Note: Sets the buffering mode of <tt>&lt;stdin&gt;</tt> and
+--   <tt>&lt;stdout&gt;</tt> to <tt>NoBuffering</tt>.
+--   
+--   If you alter the buffering mode during execution via the
+--   <a>replRead</a> or <a>replPrint</a> functions, the REPL will not work
+--   properly.
 runRepl :: Repl -> IO ()
