@@ -3,7 +3,7 @@
 Online documentation: https://jean-lopes.github.io/simple-repl/
 
 ## Usage
-`src/Example.hs`
+`example/Example.hs` ([source](https://github.com/jean-lopes/simple-repl/blob/master/example/Example.hs))
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
 module Example
@@ -28,7 +28,7 @@ main = do
 ```
 ### Output
 ```
-$ stack exec ghci .\src\Example.hs
+$ stack runghc -- .\example\Example.hs
 Starting default REPL
 REPL> a
 a

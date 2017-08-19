@@ -1,5 +1,5 @@
 name:                simple-repl
-version:             0.1.0.0
+version:             0.1.0.1
 homepage:            https://github.com/jean-lopes/simple-repl#readme
 license:             MIT
 license-file:        LICENSE
@@ -15,7 +15,6 @@ library
   ghc-options:         -Wall
   hs-source-dirs:      src                      
   exposed-modules:     Repl
-  other-modules:       Example
   build-depends:       base >= 4.7 && < 5
                      , text
   default-language:    Haskell2010

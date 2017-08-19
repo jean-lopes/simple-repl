@@ -33,13 +33,21 @@ isQuitCommand (Repl _ _ _ xs) ys = normalize xs == normalize ys
   where
     normalize = Text.toLower . Text.strip
 
--- | Starts the REPL.
+-- | Starts the REPL
+--
+-- Note: Sets the buffering mode of @\<stdin\>@ and @\<stdout\>@ to @NoBuffering@. 
+--
+-- If you alter the buffering mode during execution via the 
+-- 'replRead' or 'replPrint' functions, the REPL will not work properly.
 runRepl :: Repl -> IO ()
 runRepl repl = do    
     hSetBuffering stdin NoBuffering
     hSetBuffering stdout NoBuffering    
-    line <- replRead repl
-    let result = replEval repl line
-    if isQuitCommand repl line 
-        then Text.putStrLn ""
-        else replPrint repl result >> runRepl repl
+    runRepl'
+  where
+    runRepl' = do 
+        line <- replRead repl
+        let result = replEval repl line
+        if isQuitCommand repl line 
+            then Text.putStrLn ""
+            else replPrint repl result >> runRepl repl
