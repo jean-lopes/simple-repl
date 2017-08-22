@@ -1,37 +1,21 @@
-{-# LANGUAGE OverloadedStrings #-}
--- | Simple REPL library.
+-- | Simple REPL library core, defines the REPL data type.
+--
+-- Note: This module is not supposed to be imported!
+--
+-- Instead, import @Repl.String@ or @Repl.Text@
 module Repl
     ( Repl(..)
-    , defaultRepl
     , runRepl
     ) where
-import           Data.Text (Text)
-import qualified Data.Text as Text
-import qualified Data.Text.IO as Text
-import           System.IO
+import System.IO
 
--- | Representation of a REPL.
-data Repl = Repl
-    { replRead :: IO Text -- ^ Command used to read the input from the terminal.
-    , replEval :: Text -> Text -- ^ Evaluation function.
-    , replPrint :: Text -> IO () -- ^ Command used to print the result of evaluation.
-    , replBreak :: Text -- ^ Used to check if REPL should break the loop.
+-- | Contains the 'REP' operations of a REPL, and the loop breaking value.
+data Repl a = Repl
+    { replRead :: IO a -- ^ Command used to read the input from the terminal.
+    , replEval :: a -> a -- ^ Evaluation function.
+    , replPrint :: a -> IO () -- ^ Command used to print the result of evaluation.
+    , replBreak :: a -- ^ Used to check if REPL should break the loop.
     }
-
--- | This is the default REPL, echoes all input. Use @:quit@ to break the loop.
-defaultRepl :: Repl
-defaultRepl = Repl
-    { replRead = Text.putStr "REPL> " *> Text.getLine 
-    , replEval = id
-    , replPrint = Text.putStrLn
-    , replBreak = ":quit"
-    }
-
--- | Checks if the command is equal to the REPL loop breaking text.
-isQuitCommand :: Repl -> Text -> Bool
-isQuitCommand (Repl _ _ _ xs) ys = normalize xs == normalize ys
-  where
-    normalize = Text.toLower . Text.strip
 
 -- | Starts the REPL
 --
@@ -39,7 +23,7 @@ isQuitCommand (Repl _ _ _ xs) ys = normalize xs == normalize ys
 --
 -- If you alter the buffering mode during execution via the 
 -- 'replRead' or 'replPrint' functions, the REPL will not work properly.
-runRepl :: Repl -> IO ()
+runRepl :: Eq a => Repl a -> IO ()
 runRepl repl = do    
     hSetBuffering stdin NoBuffering
     hSetBuffering stdout NoBuffering    
@@ -48,6 +32,6 @@ runRepl repl = do
     runRepl' = do 
         line <- replRead repl
         let result = replEval repl line
-        if isQuitCommand repl line 
-            then Text.putStrLn ""
+        if replBreak repl == line 
+            then return ()
             else replPrint repl result >> runRepl repl

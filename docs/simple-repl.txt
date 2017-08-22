@@ -6,28 +6,27 @@
 @version 0.1.0.1
 
 
--- | Simple REPL library.
+-- | Simple REPL library core, defines the REPL data type. Note: This
+--   module is not supposed to be imported! Instead, import <a>String</a>
+--   or <a>Text</a>
 module Repl
 
--- | Representation of a REPL.
-data Repl
-Repl :: IO Text -> (Text -> Text) -> (Text -> IO ()) -> Text -> Repl
+-- | Contains the <tt>REP</tt> operations of a REPL, and the loop breaking
+--   value.
+data Repl a
+Repl :: IO a -> (a -> a) -> (a -> IO ()) -> a -> Repl a
 
 -- | Command used to read the input from the terminal.
-[replRead] :: Repl -> IO Text
+[replRead] :: Repl a -> IO a
 
 -- | Evaluation function.
-[replEval] :: Repl -> Text -> Text
+[replEval] :: Repl a -> a -> a
 
 -- | Command used to print the result of evaluation.
-[replPrint] :: Repl -> Text -> IO ()
+[replPrint] :: Repl a -> a -> IO ()
 
 -- | Used to check if REPL should break the loop.
-[replBreak] :: Repl -> Text
-
--- | This is the default REPL, echoes all input. Use <tt>:quit</tt> to
---   break the loop.
-defaultRepl :: Repl
+[replBreak] :: Repl a -> a
 
 -- | Starts the REPL
 --   
@@ -37,4 +36,20 @@ defaultRepl :: Repl
 --   If you alter the buffering mode during execution via the
 --   <a>replRead</a> or <a>replPrint</a> functions, the REPL will not work
 --   properly.
-runRepl :: Repl -> IO ()
+runRepl :: Eq a => Repl a -> IO ()
+
+
+-- | REPL using <a>String</a>
+module Repl.String
+
+-- | This is the default REPL, echoes all input. Use <tt>:quit</tt> to
+--   break the loop.
+defaultRepl :: Repl String
+
+
+-- | REPL using <a>Text</a>
+module Repl.Text
+
+-- | This is the default REPL, echoes all input. Use <tt>:quit</tt> to
+--   break the loop.
+defaultRepl :: Repl Text
