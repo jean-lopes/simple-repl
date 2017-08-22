@@ -3,12 +3,14 @@
 
 
 @package simple-repl
-@version 0.1.0.1
+@version 0.2.0.0
 
 
--- | Simple REPL library core, defines the REPL data type. Note: This
---   module is not supposed to be imported! Instead, import <a>String</a>
---   or <a>Text</a>
+-- | Simple REPL library core, defines the REPL data type.
+--   
+--   Note: This module is not supposed to be imported!
+--   
+--   Instead, import <tt>Repl.String</tt> or <tt>Repl.Text</tt>
 module Repl
 
 -- | Contains the <tt>REP</tt> operations of a REPL, and the loop breaking
